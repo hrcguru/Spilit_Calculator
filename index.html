@@ -13,6 +13,8 @@
             --accent-blue: #4da3ff;
             --text-dark: #2c3e50;
             --text-gray: #7f8c8d;
+            --danger-red: #e74c3c;
+            --success-green: #2ecc71;
         }
 
         * {
@@ -30,19 +32,119 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 16px;
+            padding: 20px;
         }
 
+        /* Side-by-Side Flex Layout Container */
+        .app-container {
+            display: flex;
+            gap: 24px;
+            width: 100%;
+            max-width: 860px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        /* Calculator Viewport Definition */
         .calculator-card {
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 122, 204, 0.12);
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        /* History Panel Definition */
+        .history-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 122, 204, 0.12);
+            width: 100%;
+            max-width: 400px;
+            min-height: 520px;
+            max-height: 540px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed var(--light-blue);
+            padding-bottom: 10px;
+        }
+
+        .history-title {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        /* Sleek item rows */
+        .history-item {
+            background: #f8fbfe;
+            border: 1px solid var(--light-blue);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: var(--light-blue);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .item-desc {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .item-formula {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+        }
+
+        .item-cost {
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            font-style: italic;
         }
 
         h2 {
@@ -64,17 +166,6 @@
             overflow: hidden;
         }
 
-        .result-box::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
         .result-label {
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.85);
@@ -92,7 +183,7 @@
             line-height: 1.2;
         }
 
-        /* Inputs & Alignment Layouts */
+        /* Inputs Elements */
         .input-group {
             display: flex;
             flex-direction: column;
@@ -104,29 +195,40 @@
             color: var(--text-gray);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
         }
 
         .calc-display {
             width: 100%;
-            padding: 14px 16px;
-            font-size: 1.5rem;
+            padding: 12px 16px;
+            font-size: 1.4rem;
             border: 2px solid var(--light-blue);
             border-radius: 12px;
             text-align: right;
             color: var(--primary-blue);
             font-weight: 700;
             background-color: #fafdfb;
-            transition: border-color 0.2s ease;
         }
 
         .calc-display:focus {
             outline: none;
             border-color: var(--accent-blue);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            border: 2px solid var(--light-blue);
+            border-radius: 12px;
+            color: var(--text-dark);
             background-color: #ffffff;
         }
 
-        /* Scalable People Control Controls */
+        .text-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
         .people-controls {
             display: flex;
             align-items: center;
@@ -141,23 +243,12 @@
             border: none;
             color: var(--primary-blue);
             font-size: 1.6rem;
-            font-weight: 400;
             width: 48px;
-            height: 44px;
-            border-radius: 8px;
+            height: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s;
-        }
-
-        .people-btn:hover {
-            background-color: var(--light-blue);
-        }
-
-        .people-btn:active {
-            background-color: rgba(0, 122, 204, 0.15);
         }
 
         #peopleCount {
@@ -168,143 +259,236 @@
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-dark);
-            width: 100%;
-            padding: 4px 0;
         }
 
-        #peopleCount:focus {
-            outline: none;
+        #peopleCount:focus { outline: none; }
+        #peopleCount::-webkit-outer-spin-button, #peopleCount::-webkit-inner-spin-button {
+            -webkit-appearance: none; margin: 0;
         }
 
-        /* Hide Default Spinners */
-        #peopleCount::-webkit-outer-spin-button,
-        #peopleCount::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        #peopleCount {
-            -moz-appearance: textfield;
+        /* Action Row System Buttons */
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
         }
 
-        /* Smart Responsive Keypad Grid */
+        .add-entry-btn {
+            background-color: var(--success-green);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .add-entry-btn:hover { opacity: 0.9; }
+
+        /* Keypad Grid */
         .keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 5px;
+            gap: 8px;
         }
 
         .btn {
             background-color: #f8fbfe;
             border: 1px solid var(--light-blue);
             border-radius: 12px;
-            height: 56px;
-            font-size: 1.3rem;
+            height: 48px;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
-            user-select: none;
             color: var(--text-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.1s step-end, transform 0.1s ease;
+            transition: transform 0.05s ease;
         }
 
-        .btn:active {
-            transform: scale(0.96);
-            background-color: var(--light-blue);
+        .btn:active { transform: scale(0.96); }
+        .btn.operator { background-color: var(--light-blue); color: var(--primary-blue); font-size: 1.3rem;}
+        .btn.clear { background-color: #ffebeb; color: var(--danger-red); border-color: #fdd8d8; }
+        .btn.equal { background-color: var(--primary-blue); color: white; font-weight: 700; }
+
+        /* Dialog/Modal Popups UI styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 40, 80, 0.4);
+            backdrop-filter: blur(3px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
         }
 
-        .btn.operator {
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            font-size: 1.4rem;
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-box {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .btn.clear {
-            background-color: #ffebeb;
-            color: #e74c3c;
-            border-color: #fdd8d8;
-        }
-
-        .btn.clear:active {
-            background-color: #fcd7d7;
-        }
-
-        .btn.equal {
-            background-color: var(--primary-blue);
-            color: white;
+        .modal-title {
             font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.15rem;
         }
 
-        .btn.equal:active {
-            background-color: #0066aa;
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 5px;
         }
-        
-        .btn:hover:not(.equal):not(.clear):not(.operator) {
-            background-color: #f3f8fc;
+
+        .modal-btn {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.save { background-color: var(--primary-blue); color: white; }
+        .modal-btn.delete { background-color: var(--danger-red); color: white; }
+        .modal-btn.cancel { background-color: var(--light-blue); color: var(--text-dark); grid-column: span 2; }
+
+        /* Media Queries for Responsive Handling */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .history-card {
+                min-height: auto;
+                max-height: 400px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="calculator-card">
-    <h2>Split Expense</h2>
+<div class="app-container">
+    <div class="calculator-card">
+        <h2>Split Expense</h2>
 
-    <div class="result-box">
-        <div class="result-label">Each Person Pays</div>
-        <div class="result-amount" id="splitResult">₹0.00</div>
-    </div>
-
-    <div class="input-group">
-        <label for="peopleCount">Split Between (No. of People)</label>
-        <div class="people-controls">
-            <button class="people-btn" onclick="stepPeople(-1)" type="button">−</button>
-            <input type="number" id="peopleCount" value="2" min="1" max="9999" autocomplete="off">
-            <button class="people-btn" onclick="stepPeople(1)" type="button">+</button>
+        <div class="result-box">
+            <div class="result-label">Each Person Pays</div>
+            <div class="result-amount" id="splitResult">₹0.00</div>
         </div>
-    </div>
 
-    <div class="input-group">
-        <label for="billDisplay">Total Bill / Formula</label>
-        <div class="display-wrapper">
+        <div class="input-group">
+            <label for="peopleCount">Split Between (No. of People)</label>
+            <div class="people-controls">
+                <button class="people-btn" onclick="stepPeople(-1)" type="button">−</button>
+                <input type="number" id="peopleCount" value="2" min="1" max="9999" autocomplete="off">
+                <button class="people-btn" onclick="stepPeople(1)" type="button">+</button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="billDisplay">Amount / Formula</label>
             <input type="text" id="billDisplay" class="calc-display" value="0" autocomplete="off">
         </div>
+
+        <div class="input-group">
+            <label for="billDesc">Description / Tag</label>
+            <input type="text" id="billDesc" class="text-input" placeholder="e.g., Petrol, Dinner, Rent" autocomplete="off">
+        </div>
+
+        <div class="action-row">
+            <button class="add-entry-btn" onclick="addExpenseItem()">Add to Log (+)</button>
+        </div>
+
+        <div class="keypad">
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn operator" onclick="pressKey('/')">÷</button>
+            <button class="btn operator" onclick="pressKey('*')">×</button>
+            <button class="btn operator" onclick="pressKey('-')">−</button>
+
+            <button class="btn" onclick="pressKey('7')">7</button>
+            <button class="btn" onclick="pressKey('8')">8</button>
+            <button class="btn" onclick="pressKey('9')">9</button>
+            <button class="btn operator" onclick="pressKey('+')">+</button>
+
+            <button class="btn" onclick="pressKey('4')">4</button>
+            <button class="btn" onclick="pressKey('5')">5</button>
+            <button class="btn" onclick="pressKey('6')">6</button>
+            <button class="btn equal" onclick="calculateTotal()">=</button>
+
+            <button class="btn" onclick="pressKey('1')">1</button>
+            <button class="btn" onclick="pressKey('2')">2</button>
+            <button class="btn" onclick="pressKey('3')">3</button>
+            <button class="btn" onclick="pressKey('.')">.</button>
+
+            <button class="btn" style="grid-column: span 4;" onclick="pressKey('0')">0</button>
+        </div>
     </div>
 
-    <div class="keypad">
-        <button class="btn clear" onclick="clearDisplay()">C</button>
-        <button class="btn operator" onclick="pressKey('/')">÷</button>
-        <button class="btn operator" onclick="pressKey('*')">×</button>
-        <button class="btn operator" onclick="pressKey('-')">−</button>
+    <div class="history-card">
+        <div class="history-header">
+            <span class="history-title">Expense Log History</span>
+            <span id="historyTotal" style="font-weight: 700; color: var(--text-dark); font-size: 0.95rem;">Total: ₹0.00</span>
+        </div>
+        <div class="history-list" id="historyList">
+            <div class="empty-history">No entries added yet.</div>
+        </div>
+    </div>
+</div>
 
-        <button class="btn" onclick="pressKey('7')">7</button>
-        <button class="btn" onclick="pressKey('8')">8</button>
-        <button class="btn" onclick="pressKey('9')">9</button>
-        <button class="btn operator" onclick="pressKey('+')">+</button>
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-title">Modify Log Entry</div>
+        
+        <div class="input-group">
+            <label for="modalAmount">Amount / Formula</label>
+            <input type="text" id="modalAmount" class="text-input">
+        </div>
 
-        <button class="btn" onclick="pressKey('4')">4</button>
-        <button class="btn" onclick="pressKey('5')">5</button>
-        <button class="btn" onclick="pressKey('6')">6</button>
-        <button class="btn equal" onclick="calculateTotal()">=</button>
+        <div class="input-group">
+            <label for="modalDesc">Description</label>
+            <input type="text" id="modalDesc" class="text-input">
+        </div>
 
-        <button class="btn" onclick="pressKey('1')">1</button>
-        <button class="btn" onclick="pressKey('2')">2</button>
-        <button class="btn" onclick="pressKey('3')">3</button>
-        <button class="btn" onclick="pressKey('.')">.</button>
-
-        <button class="btn" style="grid-column: span 4;" onclick="pressKey('0')">0</button>
+        <div class="modal-actions">
+            <button class="modal-btn save" onclick="saveModalEdit()">Save Changes</button>
+            <button class="modal-btn delete" onclick="deleteModalItem()">Delete</button>
+            <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+        </div>
     </div>
 </div>
 
 <script>
     const display = document.getElementById('billDisplay');
+    const descriptionInput = document.getElementById('billDesc');
     const peopleInput = document.getElementById('peopleCount');
     const splitResult = document.getElementById('splitResult');
+    const historyList = document.getElementById('historyList');
+    const historyTotalLabel = document.getElementById('historyTotal');
 
+    // Modal elements
+    const editModal = document.getElementById('editModal');
+    const modalAmount = document.getElementById('modalAmount');
+    const modalDesc = document.getElementById('modalDesc');
+
+    let expenseLog = [];
+    let selectedItemIdx = null;
     let isEvaluated = false;
 
-    // Direct event listener setups for continuous real-time changes
     display.addEventListener('input', calculateSplit);
     peopleInput.addEventListener('input', handlePeopleDirectInput);
 
@@ -324,10 +508,10 @@
 
     function clearDisplay() {
         display.value = '0';
+        descriptionInput.value = '';
         calculateSplit();
     }
 
-    // Handles the step triggers (+/- buttons) cleanly
     function stepPeople(change) {
         let current = parseInt(peopleInput.value) || 0;
         current += change;
@@ -336,21 +520,19 @@
         calculateSplit();
     }
 
-    // Prevents crashing or blank values when typing manually inside the people box
     function handlePeopleDirectInput() {
         let currentString = peopleInput.value;
-        if (currentString.trim() === '') {
-            return; // Wait until they punch a number
-        }
+        if (currentString.trim() === '') return;
         let current = parseInt(currentString);
-        if (current < 1) {
-            peopleInput.value = 1;
-        }
+        if (current < 1) peopleInput.value = 1;
         calculateSplit();
     }
 
     function parseExpression(str) {
-        return Function(`'use strict'; return (${str})`)();
+        // Cleaning up presentation formatting to pass to safe executor execution evaluation
+        let normalized = str.replace(/[^0-9+\-*/. ]/g, '');
+        if (normalized.trim() === '') return 0;
+        return Function(`'use strict'; return (${normalized})`)();
     }
 
     function calculateTotal() {
@@ -360,34 +542,122 @@
             display.value = Number(result.toFixed(2));
             isEvaluated = true;
             calculateSplit();
-        } catch (e) {
-            // Edge calculation handler
-        }
+        } catch (e) {}
     }
 
+    // Main calculation hub matching both individual entries and sum log arrays
     function calculateSplit() {
         let people = parseInt(peopleInput.value) || 1;
-        let expression = display.value;
+        
+        // 1. Calculate active workspace entry total
+        let activeTotal = 0;
+        try {
+            activeTotal = parseExpression(display.value);
+            if (isNaN(activeTotal) || !isFinite(activeTotal)) activeTotal = 0;
+        } catch (e) {}
 
-        if (!expression) {
-            splitResult.innerText = "₹0.00";
+        // 2. Sum up existing entries stored inside the persistent data array log
+        let aggregateLogSum = expenseLog.reduce((sum, item) => sum + item.computedValue, 0);
+        let absoluteCombinedTotal = activeTotal + aggregateLogSum;
+
+        // 3. Render updates dynamically to UI
+        let share = absoluteCombinedTotal / people;
+        
+        splitResult.innerText = `₹${share.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        historyTotalLabel.innerText = `Total: ₹${absoluteCombinedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // Appends structured objects to array engine
+    function addExpenseItem() {
+        let expression = display.value.trim();
+        let description = descriptionInput.value.trim() || "Expense Item";
+
+        let computedValue = 0;
+        try {
+            computedValue = parseExpression(expression);
+            if (isNaN(computedValue) || computedValue <= 0) return; 
+        } catch (e) {
+            return; // Reject bad expressions cleanly
+        }
+
+        expenseLog.push({
+            expression: expression,
+            description: description,
+            computedValue: parseFloat(computedValue.toFixed(2))
+        });
+
+        // Reset input card states after success tracking
+        display.value = "0";
+        descriptionInput.value = "";
+        
+        renderHistoryList();
+        calculateSplit();
+    }
+
+    function renderHistoryList() {
+        if (expenseLog.length === 0) {
+            historyList.innerHTML = '<div class="empty-history">No entries added yet.</div>';
             return;
         }
 
-        try {
-            let totalBill = parseExpression(expression);
+        historyList.innerHTML = '';
+        expenseLog.forEach((item, index) => {
+            let row = document.createElement('div');
+            row.className = 'history-item';
+            row.setAttribute('onclick', `openEditModal(${index})`);
             
-            if (isNaN(totalBill) || totalBill === Infinity || totalBill === -Infinity) {
-                splitResult.innerText = "₹0.00";
-                return;
-            }
+            row.innerHTML = `
+                <div class="item-details">
+                    <span class="item-desc">${item.description}</span>
+                    <span class="item-formula">${item.expression}</span>
+                </div>
+                <div class="item-cost">₹${item.computedValue.toFixed(2)}</div>
+            `;
+            historyList.appendChild(row);
+        });
+    }
 
-            let share = totalBill / people;
-            // Uses standard Indian Locale string formatting rules for clear reads
-            splitResult.innerText = `₹${share.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        } catch (e) {
-            // Keep matching safely while string layout expressions are incomplete
-        }
+    /* Modal Context Logic Interfaces */
+    function openEditModal(index) {
+        selectedItemIdx = index;
+        let item = expenseLog[index];
+        modalAmount.value = item.expression;
+        modalDesc.value = item.description;
+        editModal.classList.add('active');
+    }
+
+    function closeModal() {
+        editModal.classList.remove('active');
+        selectedItemIdx = null;
+    }
+
+    function saveModalEdit() {
+        if (selectedItemIdx === null) return;
+        
+        let newExpr = modalAmount.value.trim();
+        let newDesc = modalDesc.value.trim() || "Expense Item";
+        
+        try {
+            let val = parseExpression(newExpr);
+            if (!isNaN(val) && val >= 0) {
+                expenseLog[selectedItemIdx].expression = newExpr;
+                expenseLog[selectedItemIdx].description = newDesc;
+                expenseLog[selectedItemIdx].computedValue = parseFloat(val.toFixed(2));
+            }
+        } catch(e) {}
+
+        closeModal();
+        renderHistoryList();
+        calculateSplit();
+    }
+
+    function deleteModalItem() {
+        if (selectedItemIdx === null) return;
+        expenseLog.splice(selectedItemIdx, 1);
+        
+        closeModal();
+        renderHistoryList();
+        calculateSplit();
     }
 </script>
 
