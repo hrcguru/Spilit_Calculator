@@ -103,6 +103,7 @@
         }
         .btn-export.excel { background-color: #217346; }
         .btn-export.pdf { background-color: #f40612; }
+        .btn-export.clear-all { background-color: var(--text-gray); }
         .btn-export:hover { opacity: 0.85; }
 
         .names-grid {
@@ -267,6 +268,7 @@
         #peopleCount::-webkit-outer-spin-button, #peopleCount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
         .add-entry-btn {
+            width: 100%;
             background-color: var(--success-green); color: white; border: none;
             padding: 12px; border-radius: 12px; font-weight: 700; font-size: 1rem;
             cursor: pointer; transition: opacity 0.2s;
@@ -284,16 +286,19 @@
             background-color: #f8fbfe; border: 1px solid var(--light-blue); border-radius: 12px;
             font-size: 1.15rem; font-weight: 600; cursor: pointer; color: var(--text-dark);
             display: flex; align-items: center; justify-content: center;
+            user-select: none;
         }
-        .btn:active { transform: scale(0.96); }
+        .btn:active { background-color: var(--light-blue); transform: scale(0.96); }
         .btn.operator { background-color: var(--light-blue); color: var(--primary-blue); font-size: 1.25rem;}
         .btn.clear { background-color: #ffebeb; color: var(--danger-red); border-color: #fdd8d8; }
+        .btn.clear:active { background-color: #fdd8d8; }
         
         /* Enlarged operational button styles */
         .btn.equal { 
             background-color: var(--primary-blue); color: #ffffff; font-weight: 700; 
             grid-column: 4; grid-row: 3 / span 2; height: 100%; 
         }
+        .btn.equal:active { background-color: #005999; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -361,7 +366,7 @@
 
         <div class="input-group">
             <label for="billDisplay">Amount / Formula</label>
-            <input type="text" id="billDisplay" class="calc-display" value="0" autocomplete="off">
+            <input type="text" id="billDisplay" class="calc-display" value="0" inputmode="none" autocomplete="off">
         </div>
 
         <div class="input-group">
@@ -395,7 +400,7 @@
 
             <button class="btn" onclick="pressKey('.')">.</button>
             <button class="btn" onclick="pressKey('0')">0</button>
-            <button class="btn" onclick="pressKey('00')">00</button>
+            <button class="btn clear" onclick="eraseLastDigit()">⌫</button>
         </div>
     </div>
 
@@ -405,6 +410,7 @@
             <div class="export-group">
                 <button class="btn-export excel" onclick="exportToExcel()">Excel</button>
                 <button class="btn-export pdf" onclick="exportToPDF()">PDF</button>
+                <button class="btn-export clear-all" onclick="clearAllLogs()">Reset</button>
             </div>
         </div>
 
@@ -432,7 +438,7 @@
 
         <div class="input-group">
             <label for="modalAmount">Amount / Formula</label>
-            <input type="text" id="modalAmount" class="text-input">
+            <input type="text" id="modalAmount" class="text-input" inputmode="none">
         </div>
 
         <div class="input-group">
@@ -465,13 +471,16 @@
     const modalDesc = document.getElementById('modalDesc');
     const modalPayer = document.getElementById('modalPayer');
 
-    let expenseLog = [];
+    let expenseLog = JSON.parse(localStorage.getItem('splitExpenseLog')) || [];
+    let memberNames = JSON.parse(localStorage.getItem('splitMemberNames')) || ["Person 1", "Person 2"];
     let selectedItemIdx = null;
     let isEvaluated = false;
-    let memberNames = ["Person 1", "Person 2"];
 
     window.addEventListener('DOMContentLoaded', () => {
+        peopleInput.value = memberNames.length;
         buildNamesInputs();
+        renderHistoryList();
+        calculateSplit();
     });
 
     peopleInput.addEventListener('input', () => {
@@ -490,6 +499,7 @@
         } else if(memberNames.length > targetLen) {
             memberNames = memberNames.slice(0, targetLen);
         }
+        localStorage.setItem('splitMemberNames', JSON.stringify(memberNames));
     }
 
     function buildNamesInputs() {
@@ -504,6 +514,7 @@
             input.autocomplete = 'off';
             input.addEventListener('input', (e) => {
                 memberNames[index] = e.target.value.trim() || `Person ${index + 1}`;
+                localStorage.setItem('splitMemberNames', JSON.stringify(memberNames));
                 updatePayerDropdowns();
             });
             namesContainer.appendChild(input);
@@ -542,6 +553,15 @@
     function clearDisplay() {
         display.value = '0';
         descriptionInput.value = '';
+        calculateSplit();
+    }
+
+    function eraseLastDigit() {
+        if (display.value.length > 1) {
+            display.value = display.value.slice(0, -1);
+        } else {
+            display.value = '0';
+        }
         calculateSplit();
     }
 
@@ -599,7 +619,6 @@
         settlementBox.style.display = 'block';
         settlementList.innerHTML = '';
 
-        // Compute aggregate raw totals paid by each existing person
         let paidMap = {};
         memberNames.forEach(n => paidMap[n] = 0);
         
@@ -611,7 +630,6 @@
             }
         });
 
-        // Compute individual balance variance values
         let balances = [];
         for (let name in paidMap) {
             balances.push({ name: name, bal: paidMap[name] - sharePerPerson });
@@ -669,6 +687,8 @@
             payer: payer,
             computedValue: parseFloat(computedValue.toFixed(2))
         });
+
+        localStorage.setItem('splitExpenseLog', JSON.stringify(expenseLog));
 
         display.value = "0";
         descriptionInput.value = "";
@@ -736,6 +756,7 @@
                 expenseLog[selectedItemIdx].description = newDesc;
                 expenseLog[selectedItemIdx].payer = newPayer;
                 expenseLog[selectedItemIdx].computedValue = parseFloat(val.toFixed(2));
+                localStorage.setItem('splitExpenseLog', JSON.stringify(expenseLog));
             }
         } catch(e) {}
 
@@ -747,10 +768,21 @@
     function deleteModalItem() {
         if (selectedItemIdx === null) return;
         expenseLog.splice(selectedItemIdx, 1);
+        localStorage.setItem('splitExpenseLog', JSON.stringify(expenseLog));
         
         closeModal();
         renderHistoryList();
         calculateSplit();
+    }
+
+    function clearAllLogs() {
+        if(confirm("Are you sure you want to clear all logged sessions?")) {
+            expenseLog = [];
+            localStorage.removeItem('splitExpenseLog');
+            clearDisplay();
+            renderHistoryList();
+            calculateSplit();
+        }
     }
 
     function exportToExcel() {
