@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Split Expense Calculator</title>
+    <title>Enterprise Split Expense Architecture</title>
     <style>
         :root {
-            --bg-color: #f0f7fc;
+            --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --primary-blue: #007acc;
             --light-blue: #e1f0fa;
@@ -16,13 +16,14 @@
             --danger-red: #e74c3c;
             --success-green: #2ecc71;
             --orange-alert: #e67e22;
+            --border-radius: 16px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -33,14 +34,14 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
         }
 
         .app-container {
             display: flex;
             gap: 24px;
             width: 100%;
-            max-width: 920px;
+            max-width: 1100px;
             align-items: flex-start;
             justify-content: center;
         }
@@ -48,25 +49,25 @@
         .calculator-card {
             background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 122, 204, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 40, 80, 0.06);
             width: 100%;
-            max-width: 420px;
-            padding: 24px;
+            max-width: 460px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             flex-shrink: 0;
         }
 
         .history-card {
             background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 122, 204, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 40, 80, 0.06);
             width: 100%;
-            max-width: 450px;
-            min-height: 680px;
-            max-height: 720px;
-            padding: 24px;
+            max-width: 540px;
+            min-height: 840px;
+            max-height: 880px;
+            padding: 28px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -77,12 +78,12 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px dashed var(--light-blue);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
         }
 
         .history-title {
             color: var(--primary-blue);
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 700;
         }
 
@@ -92,7 +93,7 @@
         }
 
         .btn-export {
-            padding: 6px 12px;
+            padding: 6px 14px;
             font-size: 0.8rem;
             font-weight: 700;
             border: none;
@@ -106,30 +107,67 @@
         .btn-export.clear-all { background-color: var(--text-gray); }
         .btn-export:hover { opacity: 0.85; }
 
-        .names-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            max-height: 110px;
+        /* Enhanced Scroll Containers for Multi-member Scaling */
+        .scrollable-grid-box {
+            background: #fafbfc;
+            border: 2px solid var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            max-height: 140px;
             overflow-y: auto;
-            background: #fdfefe;
-            border: 1px solid var(--light-blue);
-            border-radius: 12px;
-            padding: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
-        .payer-select-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        /* Standardized inside layout mechanics */
+        .inner-layout-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+            background: #ffffff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #eef2f5;
+            transition: background 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .checkbox-item:hover { background: var(--light-blue); }
+        .checkbox-item input { width: 14px; height: 14px; accent-color: var(--primary-blue); cursor: pointer; }
+
+        .section-hdr-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+
+        .macro-link-btn {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .macro-link-btn:hover { text-decoration: underline; }
 
         .select-input {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             font-size: 0.95rem;
             border: 2px solid var(--light-blue);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             color: var(--text-dark);
             background-color: #ffffff;
             outline: none;
@@ -139,7 +177,7 @@
         .settlement-card {
             background: #fffbf4;
             border: 1px solid #ffeacc;
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             padding: 14px;
         }
         .settlement-hdr {
@@ -147,22 +185,79 @@
             font-weight: 700;
             text-transform: uppercase;
             color: var(--orange-alert);
-            margin-bottom: 6px;
-            letter-spacing: 0.03em;
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
         }
         .settlement-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             font-size: 0.88rem;
         }
         .settlement-row {
             display: flex;
             justify-content: space-between;
-            padding: 3px 0;
+            padding: 4px 0;
             border-bottom: 1px dashed #f5ecd5;
         }
+
+        .totals-summary-box {
+            background: #fdfdfd;
+            border: 2px solid var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 14px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .totals-summary-hdr {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.02em;
+        }
+        .totals-summary-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .totals-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f7f9fa;
+            padding-bottom: 2px;
+        }
+
+        /* Status Pills mapping colors based on standing balances */
+        .status-pill {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .status-pill.settled { background: #eef2f5; color: var(--text-gray); }
+        .status-pill.owes { background: #fdebeb; color: var(--danger-red); }
+        .status-pill.owed { background: #e8f9f0; color: var(--success-green); }
+
+        /* Search Filter Box Layout Configuration */
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border: 2px solid var(--light-blue);
+            border-radius: 10px;
+            outline: none;
+            color: var(--text-dark);
+        }
+        .search-input:focus { border-color: var(--accent-blue); }
 
         .history-list {
             flex: 1;
@@ -170,41 +265,43 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            padding-right: 2px;
         }
 
         .history-item {
-            background: #f8fbfe;
-            border: 1px solid var(--light-blue);
-            border-radius: 12px;
-            padding: 12px 16px;
+            background: #ffffff;
+            border: 1px solid #eef2f5;
+            border-radius: var(--border-radius);
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
             transition: all 0.2s ease;
         }
         .history-item:hover {
-            background: var(--light-blue);
             border-color: var(--accent-blue);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 204, 0.05);
         }
 
         .item-details {
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            max-width: 70%;
+            gap: 3px;
+            max-width: 75%;
         }
         .item-desc { font-weight: 600; color: var(--text-dark); font-size: 0.95rem; }
-        .item-meta { font-size: 0.75rem; color: var(--text-gray); font-weight: 500; }
+        .item-meta { font-size: 0.75rem; color: var(--text-gray); font-weight: 500; line-height: 1.3; }
         .item-meta b { color: var(--primary-blue); }
-        .item-cost { font-weight: 700; color: var(--primary-blue); font-size: 1.1rem; }
+        .item-cost { font-weight: 700; color: var(--primary-blue); font-size: 1.1rem; text-align: right; }
 
         .empty-history {
             text-align: center;
             color: var(--text-gray);
             font-size: 0.9rem;
-            margin-top: 30px;
+            margin-top: 40px;
             font-style: italic;
         }
 
@@ -212,25 +309,25 @@
 
         .result-box {
             background: linear-gradient(135deg, #007acc 0%, #005999 100%);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 16px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 122, 204, 0.2);
+            box-shadow: 0 6px 20px rgba(0, 122, 204, 0.15);
         }
-        .result-label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.85); font-weight: 600; text-transform: uppercase; }
+        .result-label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.85); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
         .result-amount { font-size: 2.2rem; font-weight: 800; color: #ffffff; }
 
-        .input-group { display: flex; flex-direction: column; gap: 4px; }
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
         .input-row-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        label { font-size: 0.75rem; color: var(--text-gray); font-weight: 700; text-transform: uppercase; }
+        label { font-size: 0.75rem; color: var(--text-gray); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
 
         .calc-display {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             font-size: 1.4rem;
             border: 2px solid var(--light-blue);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             text-align: right;
             color: var(--primary-blue);
             font-weight: 700;
@@ -239,10 +336,10 @@
 
         .text-input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 11px 14px;
             font-size: 0.95rem;
             border: 2px solid var(--light-blue);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             color: var(--text-dark);
         }
         .text-input:focus { outline: none; border-color: var(--accent-blue); }
@@ -250,14 +347,14 @@
         .people-controls {
             display: flex;
             align-items: center;
-            background: #f4f9fd;
+            background: #ffffff;
             border: 2px solid var(--light-blue);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             padding: 2px;
         }
         .people-btn {
             background: transparent; border: none; color: var(--primary-blue);
-            font-size: 1.4rem; width: 38px; height: 36px; cursor: pointer;
+            font-size: 1.4rem; width: 40px; height: 38px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
         }
         #peopleCount {
@@ -270,12 +367,11 @@
         .add-entry-btn {
             width: 100%;
             background-color: var(--success-green); color: white; border: none;
-            padding: 12px; border-radius: 12px; font-weight: 700; font-size: 1rem;
-            cursor: pointer; transition: opacity 0.2s;
+            padding: 14px; border-radius: var(--border-radius); font-weight: 700; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2); transition: all 0.2s;
         }
-        .add-entry-btn:hover { opacity: 0.9; }
+        .add-entry-btn:hover { opacity: 0.95; transform: translateY(-1px); }
 
-        /* Keypad Mapping Layout Configurations */
         .keypad {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -285,15 +381,13 @@
         .btn {
             background-color: #f8fbfe; border: 1px solid var(--light-blue); border-radius: 12px;
             font-size: 1.15rem; font-weight: 600; cursor: pointer; color: var(--text-dark);
-            display: flex; align-items: center; justify-content: center;
-            user-select: none;
+            display: flex; align-items: center; justify-content: center; user-select: none;
         }
         .btn:active { background-color: var(--light-blue); transform: scale(0.96); }
         .btn.operator { background-color: var(--light-blue); color: var(--primary-blue); font-size: 1.25rem;}
         .btn.clear { background-color: #ffebeb; color: var(--danger-red); border-color: #fdd8d8; }
         .btn.clear:active { background-color: #fdd8d8; }
         
-        /* Enlarged operational button styles */
         .btn.equal { 
             background-color: var(--primary-blue); color: #ffffff; font-weight: 700; 
             grid-column: 4; grid-row: 3 / span 2; height: 100%; 
@@ -309,43 +403,50 @@
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-box {
             background: white; padding: 24px; border-radius: 20px;
-            width: 100%; max-width: 360px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             display: flex; flex-direction: column; gap: 16px;
         }
         .modal-title { font-weight: 700; color: var(--primary-blue); font-size: 1.15rem; }
         .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
-        .modal-btn { padding: 10px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; }
+        .modal-btn { padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
         .modal-btn.save { background-color: var(--primary-blue); color: white; }
         .modal-btn.delete { background-color: var(--danger-red); color: white; }
         .modal-btn.cancel { background-color: var(--light-blue); color: var(--text-dark); grid-column: span 2; }
+
+        /* Custom Scrollbar Styles for Sleek Scaling UI */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         @media print {
             body * { visibility: hidden; }
             .history-card, .history-card * { visibility: visible; }
             .history-card { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; max-height: none; }
-            .export-group { display: none; }
+            .export-group, .totals-summary-box, .search-wrapper { display: none; }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 840px) {
             .app-container { flex-direction: column; align-items: center; }
-            .history-card { min-height: auto; max-height: 600px; width: 100%; }
+            .history-card { min-height: auto; max-height: none; width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
+    <!-- CALCULATOR ENGINE FRAME -->
     <div class="calculator-card">
         <h2>Split Expense</h2>
 
         <div class="result-box">
-            <div class="result-label">Each Person Share</div>
+            <div class="result-label">Current Entry Weight</div>
             <div class="result-amount" id="splitResult">₹0.00</div>
         </div>
 
         <div class="input-row-split">
             <div class="input-group">
-                <label for="peopleCount">No. of People</label>
+                <label for="peopleCount">Group Size</label>
                 <div class="people-controls">
                     <button class="people-btn" onclick="stepPeople(-1)" type="button">−</button>
                     <input type="number" id="peopleCount" value="2" min="1" max="50" autocomplete="off">
@@ -360,8 +461,23 @@
         </div>
 
         <div class="input-group">
-            <label>Assign Names</label>
-            <div class="names-grid" id="namesContainer"></div>
+            <label>Modify Profiles</label>
+            <div class="scrollable-grid-box">
+                <div class="inner-layout-grid" id="namesContainer"></div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="section-hdr-row">
+                <label>Split Between (Consumers)</label>
+                <div>
+                    <button class="macro-link-btn" onclick="toggleAllConsumers(true)">All</button> | 
+                    <button class="macro-link-btn" onclick="toggleAllConsumers(false)">None</button>
+                </div>
+            </div>
+            <div class="scrollable-grid-box">
+                <div class="inner-layout-grid" id="consumersContainer"></div>
+            </div>
         </div>
 
         <div class="input-group">
@@ -375,7 +491,7 @@
         </div>
 
         <div class="action-row">
-            <button class="add-entry-btn" onclick="addExpenseItem()">Add to Log (+)</button>
+            <button class="add-entry-btn" onclick="addExpenseItem()">Commit to Log (+)</button>
         </div>
 
         <div class="keypad">
@@ -404,6 +520,7 @@
         </div>
     </div>
 
+    <!-- LOGS, REPORTING, & BALANCES OVERVIEW FRAME -->
     <div class="history-card">
         <div class="history-header">
             <span class="history-title">Logs & Settlements</span>
@@ -414,9 +531,20 @@
             </div>
         </div>
 
+        <div class="totals-summary-box">
+            <div class="totals-summary-hdr">Group Balances Ledger</div>
+            <ul class="totals-summary-list" id="individualTotalsList"></ul>
+        </div>
+
         <div class="settlement-card" id="settlementBox" style="display: none;">
-            <div class="settlement-hdr">Who Owes Whom Report</div>
+            <div class="settlement-hdr">Clearance Routing Architecture</div>
             <ul class="settlement-list" id="settlementList"></ul>
+        </div>
+
+        <div class="section-hdr-row" style="margin-top: 4px;">
+            <div class="search-wrapper">
+                <input type="text" id="logSearch" class="search-input" placeholder="🔍 Filter items by tag or description..." autocomplete="off" oninput="renderHistoryList()">
+            </div>
         </div>
 
         <div id="historyTotal" style="font-weight: 700; color: var(--text-dark); font-size: 0.95rem; text-align: right;">Total Logged: ₹0.00</div>
@@ -427,6 +555,7 @@
     </div>
 </div>
 
+<!-- DATA EDIT MODAL LAYER -->
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
         <div class="modal-title">Modify Log Entry</div>
@@ -434,6 +563,19 @@
         <div class="input-group">
             <label for="modalPayer">Who Paid</label>
             <select id="modalPayer" class="select-input"></select>
+        </div>
+
+        <div class="input-group">
+            <div class="section-hdr-row">
+                <label>Split Between</label>
+                <div>
+                    <button class="macro-link-btn" onclick="toggleModalConsumers(true)">All</button> | 
+                    <button class="macro-link-btn" onclick="toggleModalConsumers(false)">None</button>
+                </div>
+            </div>
+            <div class="scrollable-grid-box">
+                <div class="inner-layout-grid" id="modalConsumersContainer"></div>
+            </div>
         </div>
 
         <div class="input-group">
@@ -460,16 +602,20 @@
     const payerSelect = document.getElementById('billPayer');
     const peopleInput = document.getElementById('peopleCount');
     const namesContainer = document.getElementById('namesContainer');
+    const consumersContainer = document.getElementById('consumersContainer');
     const splitResult = document.getElementById('splitResult');
     const historyList = document.getElementById('historyList');
     const historyTotalLabel = document.getElementById('historyTotal');
     const settlementBox = document.getElementById('settlementBox');
     const settlementList = document.getElementById('settlementList');
+    const individualTotalsList = document.getElementById('individualTotalsList');
+    const logSearch = document.getElementById('logSearch');
 
     const editModal = document.getElementById('editModal');
     const modalAmount = document.getElementById('modalAmount');
     const modalDesc = document.getElementById('modalDesc');
     const modalPayer = document.getElementById('modalPayer');
+    const modalConsumersContainer = document.getElementById('modalConsumersContainer');
 
     let expenseLog = JSON.parse(localStorage.getItem('splitExpenseLog')) || [];
     let memberNames = JSON.parse(localStorage.getItem('splitMemberNames')) || ["Person 1", "Person 2"];
@@ -504,22 +650,63 @@
 
     function buildNamesInputs() {
         namesContainer.innerHTML = '';
+        consumersContainer.innerHTML = '';
+        
         memberNames.forEach((name, index) => {
             let input = document.createElement('input');
             input.type = 'text';
             input.className = 'text-input';
             input.style.padding = '6px 10px';
             input.style.fontSize = '0.85rem';
+            input.style.borderRadius = '8px';
             input.value = name;
             input.autocomplete = 'off';
             input.addEventListener('input', (e) => {
                 memberNames[index] = e.target.value.trim() || `Person ${index + 1}`;
                 localStorage.setItem('splitMemberNames', JSON.stringify(memberNames));
                 updatePayerDropdowns();
+                refreshConsumerCheckboxes();
             });
             namesContainer.appendChild(input);
+            createCheckboxRow(consumersContainer, name, true);
         });
         updatePayerDropdowns();
+    }
+
+    function createCheckboxRow(container, name, checkedState) {
+        let label = document.createElement('label');
+        label.className = 'checkbox-item';
+        label.title = name;
+        
+        let chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.value = name;
+        chk.checked = checkedState;
+        chk.addEventListener('change', calculateSplit);
+        
+        label.appendChild(chk);
+        label.appendChild(document.createTextNode(name));
+        container.appendChild(label);
+    }
+
+    function toggleAllConsumers(status) {
+        const checkboxes = consumersContainer.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.checked = status);
+        calculateSplit();
+    }
+
+    function toggleModalConsumers(status) {
+        const checkboxes = modalConsumersContainer.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.checked = status);
+    }
+
+    function refreshConsumerCheckboxes() {
+        const savedChecked = Array.from(consumersContainer.querySelectorAll('input:checked')).map(i => i.value);
+        consumersContainer.innerHTML = '';
+        memberNames.forEach(name => {
+            let wasChecked = savedChecked.length === 0 ? true : savedChecked.includes(name);
+            createCheckboxRow(consumersContainer, name, wasChecked);
+        });
     }
 
     function updatePayerDropdowns() {
@@ -591,26 +778,71 @@
         } catch (e) {}
     }
 
+    function getSelectedConsumers(container) {
+        return Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
+    }
+
     function calculateSplit() {
-        let peopleCount = memberNames.length || 1;
         let activeTotal = 0;
         try {
             activeTotal = parseExpression(display.value);
             if (isNaN(activeTotal) || !isFinite(activeTotal)) activeTotal = 0;
         } catch (e) {}
 
+        let activeConsumers = getSelectedConsumers(consumersContainer);
+        let activeShare = activeConsumers.length > 0 ? activeTotal / activeConsumers.length : 0;
+        
+        splitResult.innerText = `₹${activeShare.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${activeConsumers.length < memberNames.length ? '(Custom)' : ''}`;
+
+        let netPaid = {};
+        let netOwed = {};
+        memberNames.forEach(n => { netPaid[n] = 0; netOwed[n] = 0; });
+
+        expenseLog.forEach(item => {
+            if (netPaid[item.payer] !== undefined) netPaid[item.payer] += item.computedValue;
+            
+            let consumers = item.consumers || memberNames;
+            let costPerUser = item.computedValue / (consumers.length || 1);
+            consumers.forEach(c => {
+                if(netOwed[c] !== undefined) netOwed[c] += costPerUser;
+            });
+        });
+
+        let activePayer = payerSelect.value;
+        if(activePayer && netPaid[activePayer] !== undefined) {
+            netPaid[activePayer] += activeTotal;
+        }
+        activeConsumers.forEach(c => {
+            if(netOwed[c] !== undefined) netOwed[c] += activeShare;
+        });
+
         let aggregateLogSum = expenseLog.reduce((sum, item) => sum + item.computedValue, 0);
         let absoluteCombinedTotal = activeTotal + aggregateLogSum;
-
-        let share = absoluteCombinedTotal / peopleCount;
-        
-        splitResult.innerText = `₹${share.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         historyTotalLabel.innerText = `Total Logged: ₹${absoluteCombinedTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        
-        recalculateSettlements(absoluteCombinedTotal, share);
+
+        individualTotalsList.innerHTML = '';
+        memberNames.forEach(name => {
+            let balanceVal = netPaid[name] - netOwed[name];
+            let pillHTML = '';
+            
+            if (Math.abs(balanceVal) < 0.02) {
+                pillHTML = `<span class="status-pill settled">Settled</span>`;
+            } else if (balanceVal > 0) {
+                pillHTML = `<span class="status-pill owed">+ Get ₹${balanceVal.toFixed(2)}</span>`;
+            } else {
+                pillHTML = `<span class="status-pill owes">− Owe ₹${Math.abs(balanceVal).toFixed(2)}</span>`;
+            }
+
+            let row = document.createElement('li');
+            row.className = 'totals-summary-row';
+            row.innerHTML = `<span><b>${name}</b> <span style="font-size:0.75rem; color:var(--text-gray); margin-left:4px;">(Paid ₹${netPaid[name].toFixed(2)})</span></span> ${pillHTML}`;
+            individualTotalsList.appendChild(row);
+        });
+
+        recalculateSettlements(netPaid, netOwed);
     }
 
-    function recalculateSettlements(totalExpense, sharePerPerson) {
+    function recalculateSettlements(netPaid, netOwed) {
         if (expenseLog.length === 0) {
             settlementBox.style.display = 'none';
             return;
@@ -619,28 +851,17 @@
         settlementBox.style.display = 'block';
         settlementList.innerHTML = '';
 
-        let paidMap = {};
-        memberNames.forEach(n => paidMap[n] = 0);
-        
-        expenseLog.forEach(item => {
-            if (paidMap[item.payer] !== undefined) {
-                paidMap[item.payer] += item.computedValue;
-            } else {
-                paidMap[item.payer] = item.computedValue;
-            }
-        });
-
         let balances = [];
-        for (let name in paidMap) {
-            balances.push({ name: name, bal: paidMap[name] - sharePerPerson });
+        for (let name in netPaid) {
+            balances.push({ name: name, bal: netPaid[name] - netOwed[name] });
         }
 
         let creditors = balances.filter(b => b.bal > 0).sort((a,b) => b.bal - a.bal);
         let debtors = balances.filter(b => b.bal < 0).sort((a,b) => a.bal - b.bal);
 
         let settlementHTML = '';
-
         let i = 0, j = 0;
+
         while (i < debtors.length && j < creditors.length) {
             let oweAmt = Math.abs(debtors[i].bal);
             let getAmt = creditors[j].bal;
@@ -672,8 +893,10 @@
         let expression = display.value.trim();
         let description = descriptionInput.value.trim() || "Expense Item";
         let payer = payerSelect.value;
+        let consumers = getSelectedConsumers(consumersContainer);
 
         if(!payer) return alert("Please assign a valid name or person profile first.");
+        if(consumers.length === 0) return alert("Please select at least one person who benefits from this split.");
 
         let computedValue = 0;
         try {
@@ -685,6 +908,7 @@
             expression: expression,
             description: description,
             payer: payer,
+            consumers: consumers,
             computedValue: parseFloat(computedValue.toFixed(2))
         });
 
@@ -698,21 +922,36 @@
     }
 
     function renderHistoryList() {
-        if (expenseLog.length === 0) {
-            historyList.innerHTML = '<div class="empty-history">No logs recorded yet.</div>';
+        const query = logSearch.value.toLowerCase().trim();
+        
+        let filteredLog = expenseLog;
+        if(query !== "") {
+            filteredLog = expenseLog.filter(item => 
+                item.description.toLowerCase().includes(query) || 
+                item.payer.toLowerCase().includes(query)
+            );
+        }
+
+        if (filteredLog.length === 0) {
+            historyList.innerHTML = `<div class="empty-history">${expenseLog.length === 0 ? 'No logs recorded yet.' : 'No items match your criteria.'}</div>`;
             return;
         }
 
         historyList.innerHTML = '';
-        expenseLog.forEach((item, index) => {
+        filteredLog.forEach((item, index) => {
+            // map match filtered logs index with real position arrays
+            let baselineIndex = expenseLog.indexOf(item);
             let row = document.createElement('div');
             row.className = 'history-item';
-            row.setAttribute('onclick', `openEditModal(${index})`);
+            row.setAttribute('onclick', `openEditModal(${baselineIndex})`);
             
+            let consumerText = item.consumers.length === memberNames.length ? "Everyone" : item.consumers.join(', ');
+
             row.innerHTML = `
                 <div class="item-details">
                     <span class="item-desc">${item.description}</span>
                     <span class="item-meta">Paid by: <b>${item.payer}</b> (${item.expression})</span>
+                    <span class="item-meta" style="color:var(--text-gray)">Split: <b>${consumerText}</b></span>
                 </div>
                 <div class="item-cost">₹${item.computedValue.toFixed(2)}</div>
             `;
@@ -734,6 +973,13 @@
         modalAmount.value = item.expression;
         modalDesc.value = item.description;
         modalPayer.value = item.payer;
+
+        modalConsumersContainer.innerHTML = '';
+        memberNames.forEach(name => {
+            let isChecked = item.consumers ? item.consumers.includes(name) : true;
+            createCheckboxRow(modalConsumersContainer, name, isChecked);
+        });
+
         editModal.classList.add('active');
     }
 
@@ -748,13 +994,17 @@
         let newExpr = modalAmount.value.trim();
         let newDesc = modalDesc.value.trim() || "Expense Item";
         let newPayer = modalPayer.value;
+        let newConsumers = getSelectedConsumers(modalConsumersContainer);
         
+        if(newConsumers.length === 0) return alert("Please select at least one target member.");
+
         try {
             let val = parseExpression(newExpr);
             if (!isNaN(val) && val >= 0) {
                 expenseLog[selectedItemIdx].expression = newExpr;
                 expenseLog[selectedItemIdx].description = newDesc;
                 expenseLog[selectedItemIdx].payer = newPayer;
+                expenseLog[selectedItemIdx].consumers = newConsumers;
                 expenseLog[selectedItemIdx].computedValue = parseFloat(val.toFixed(2));
                 localStorage.setItem('splitExpenseLog', JSON.stringify(expenseLog));
             }
@@ -780,6 +1030,7 @@
             expenseLog = [];
             localStorage.removeItem('splitExpenseLog');
             clearDisplay();
+            logSearch.value = "";
             renderHistoryList();
             calculateSplit();
         }
@@ -787,20 +1038,17 @@
 
     function exportToExcel() {
         if(expenseLog.length === 0) return alert("Nothing to export yet!");
-        let csvContent = "data:text/csv;charset=utf-8,Description,Payer Profiles,Formula String,Computed Value (INR)\r\n";
+        let csvContent = "data:text/csv;charset=utf-8,Description,Payer Profiles,Beneficiaries,Formula String,Computed Value (INR)\r\n";
         
         expenseLog.forEach(row => {
-            csvContent += `"${row.description}","${row.payer}","${row.expression}",${row.computedValue}\r\n`;
+            let consumersList = row.consumers ? row.consumers.join('; ') : "All";
+            csvContent += `"${row.description}","${row.payer}","${consumersList}","${row.expression}",${row.computedValue}\r\n`;
         });
-        
-        let totalSum = expenseLog.reduce((sum, item) => sum + item.computedValue, 0);
-        csvContent += `\r\nAggregate Total,,,${totalSum}\r\n`;
-        csvContent += `Per Person Share (Split among ${memberNames.length}),,,${(totalSum / memberNames.length).toFixed(2)}\r\n`;
 
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Split_Expenses_Report.csv");
+        link.setAttribute("download", "Custom_Split_Expenses_Report.csv");
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
